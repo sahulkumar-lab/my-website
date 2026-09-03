@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K2Kumar-IT | Cybersecurity Course</title>
+<style>
+  :root{
+    --bg: #05070a;
+    --bg-panel: #0a0f14;
+    --line: #16241f;
+    --text: #cfe8dd;
+    --text-dim: #6d8a80;
+    --green: #39ff88;
+    --green-dim: #1f8f52;
+    --amber: #ffb454;
+    --red: #ff5f56;
+    --mono: 'Courier New', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  a{ color: inherit; }
+
+  /* ---------- Matrix rain background ---------- */
+  #matrix{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.16;
+    pointer-events: none;
+  }
+
+  /* ---------- Scanline / vignette overlay ---------- */
+  .grain-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 0%, rgba(57,255,136,0.05), transparent 60%),
+                linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
+  }
+
+  /* ---------- Layout shell ---------- */
+  .wrap{
+    position: relative;
+    z-index: 2;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- Nav ---------- */
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+    background: rgba(5,7,10,0.75);
+    border-bottom: 1px solid var(--line);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 18px 28px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .brand{
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--green);
+    display:flex;
+    align-items:center;
+    gap: 10px;
+  }
+  .brand .dot{
+    width: 9px; height:9px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: blink 1.6s infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+
+  .navlinks{
+    display:flex;
+    gap: 28px;
+    font-size: 14.5px;
+    color: var(--text-dim);
+  }
+  .navlinks a{ text-decoration:none; transition: color 0.2s; }
+  .navlinks a:hover{ color: var(--green); }
+
+  .navlinks{ display:none; }
+  @media (min-width: 720px){ .navlinks{ display:flex; } }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding: 88px 0 70px;
+    text-align: left;
+  }
+
+  .kicker{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green-dim);
+    margin-bottom: 18px;
+  }
+  .kicker::before{ content: '$ '; color: var(--green); }
+
+  h1{
+    font-family: var(--mono);
+    font-size: clamp(32px, 6vw, 58px);
+    line-height: 1.08;
+    font-weight: 700;
+    color: #eafff2;
+    max-width: 780px;
+    position: relative;
+  }
+
+  .glitch-word{
+    position: relative;
+    display:inline-block;
+    color: var(--green);
+  }
+  .glitch-word::before,
+  .glitch-word::after{
+    content: attr(data-text);
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%;
+    overflow: hidden;
+    color: var(--green);
+    background: var(--bg);
+    clip-path: inset(0 0 0 0);
+  }
+  .glitch-word::before{
+    color: var(--red);
+    animation: glitchTop 4.5s infinite linear;
+  }
+  .glitch-word::after{
+    color: #46d4ff;
+    animation: glitchBottom 4.5s infinite linear;
+  }
+  @keyframes glitchTop{
+    0%,92%,100%{ clip-path: inset(0 0 100% 0); transform: translate(0,0); }
+    93%{ clip-path: inset(0 0 65% 0); transform: translate(-2px,-1px); }
+    95%{ clip-path: inset(30% 0 40% 0); transform: translate(2px,1px); }
+    97%{ clip-path: inset(60% 0 5% 0); transform: translate(-1px,0); }
+  }
+  @keyframes glitchBottom{
+    0%,92%,100%{ clip-path: inset(100% 0 0 0); transform: translate(0,0); }
+    93%{ clip-path: inset(70% 0 0 0); transform: translate(2px,1px); }
+    95%{ clip-path: inset(10% 0 55% 0); transform: translate(-2px,-1px); }
+    97%{ clip-path: inset(40% 0 20% 0); transform: translate(1px,0); }
+  }
+
+  .subhead{
+    margin-top: 22px;
+    max-width: 560px;
+    color: var(--text-dim);
+    font-size: 16.5px;
+  }
+
+  .cta-row{
+    margin-top: 34px;
+    display:flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .btn{
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 13px 22px;
+    border-radius: 4px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:hover{ transform: translateY(-2px); }
+  .btn-primary{
+    background: var(--green);
+    color: #04160c;
+    font-weight: 700;
+    box-shadow: 0 0 0 rgba(57,255,136,0);
+  }
+  .btn-primary:hover{ box-shadow: 0 6px 24px rgba(57,255,136,0.25); }
+  .btn-ghost{
+    border-color: var(--line);
+    color: var(--text);
+  }
+  .btn-ghost:hover{ border-color: var(--green-dim); color: var(--green); }
+
+  /* ---------- Terminal ---------- */
+  .terminal{
+    margin-top: 56px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    max-width: 640px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  }
+  .terminal-bar{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    padding: 11px 14px;
+    background: #0d1319;
+    border-bottom: 1px solid var(--line);
+  }
+  .terminal-bar span{ width:11px; height:11px; border-radius:50%; }
+  .terminal-bar .r{ background: var(--red); }
+  .terminal-bar .a{ background: var(--amber); }
+  .terminal-bar .g{ background: var(--green-dim); }
+  .terminal-bar .path{
+    margin-left: 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .terminal-body{
+    padding: 18px 20px 24px;
+    font-family: var(--mono);
+    font-size: 13.5px;
+    min-height: 150px;
+  }
+  .terminal-body .line{ color: var(--text-dim); margin-bottom: 6px; }
+  .terminal-body .out{ color: var(--green); }
+  #typed-line{ color: var(--text); }
+  .cursor{
+    display:inline-block;
+    width: 8px; height: 15px;
+    background: var(--green);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: blink 1s steps(1) infinite;
+  }
+
+  /* ---------- Section shell ---------- */
+  section{ padding: 76px 0; position: relative; }
+  .section-head{ margin-bottom: 40px; max-width: 620px; }
+  .section-tag{
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--green-dim);
+    margin-bottom: 10px;
+  }
+  .section-tag::before{ content:'// '; }
+  h2{
+    font-size: clamp(24px, 3.4vw, 32px);
+    font-weight: 700;
+    color: #eafff2;
+    font-family: var(--sans);
+  }
+  .section-desc{ margin-top: 12px; color: var(--text-dim); font-size: 15px; max-width: 540px; }
+
+  hr.rule{ border:none; border-top:1px solid var(--line); }
+
+  /* ---------- Modules (course path) ---------- */
+  .modules{ display:flex; flex-direction:column; }
+  .module{
+    display:grid;
+    grid-template-columns: 64px 1fr;
+    gap: 20px;
+    padding: 26px 0;
+    border-top: 1px solid var(--line);
+    position: relative;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .module.visible{ opacity: 1; transform: translateY(0); }
+  .module:last-child{ border-bottom: 1px solid var(--line); }
+  .module-index{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green-dim);
+    padding-top: 3px;
+  }
+  .module-title{ font-size: 17px; font-weight: 600; color: #e7fbf0; margin-bottom: 6px; }
+  .module-desc{ color: var(--text-dim); font-size: 14.5px; max-width: 560px; }
+  .module-tag{
+    display:inline-block;
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--amber);
+    border: 1px solid rgba(255,180,84,0.3);
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+
+  /* ---------- Stats ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  @media(min-width: 640px){ .stats{ grid-template-columns: repeat(4, 1fr); } }
+  .stat{
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 22px 18px;
+    background: linear-gradient(180deg, rgba(57,255,136,0.03), transparent);
+  }
+  .stat-num{
+    font-family: var(--mono);
+    font-size: 30px;
+    color: var(--green);
+    font-weight: 700;
+  }
+  .stat-label{ margin-top: 6px; font-size: 13px; color: var(--text-dim); }
+
+  /* ---------- Skills grid ---------- */
+  .skills-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 14px;
+    margin-top: 8px;
+  }
+  .skill-chip{
+    border: 1px solid var(--line);
+    padding: 14px 16px;
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .skill-chip:hover{ border-color: var(--green-dim); transform: translateX(3px); }
+  .skill-chip .bullet{ color: var(--green); }
+
+  /* ---------- Footer ---------- */
+  footer{
+    border-top: 1px solid var(--line);
+    padding: 34px 0 44px;
+  }
+  .footer-row{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items:center;
+    gap: 14px;
+  }
+  .footer-brand{
+    font-family: var(--mono);
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .footer-brand b{ color: var(--green); }
+  .footer-links{ display:flex; gap: 20px; font-size: 13px; color: var(--text-dim); }
+  .footer-links a{ text-decoration: none; }
+  .footer-links a:hover{ color: var(--green); }
+
+  ::selection{ background: var(--green); color: #04160c; }
+</style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+<div class="grain-overlay"></div>
+
+<header>
+  <nav>
+    <div class="brand"><span class="dot"></span>K2Kumar-IT</div>
+    <div class="navlinks">
+      <a href="#modules">Modules</a>
+      <a href="#skills">Skills</a>
+      <a href="#stats">Outcomes</a>
+      <a href="#enroll">Enroll</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="kicker">whoami --course</div>
+    <h1>
+      Learn to think like<br>
+      an <span class="glitch-word" data-text="attacker.">attacker.</span><br>
+      Defend like a pro.
+    </h1>
+    <p class="subhead">
+      K2Kumar-IT's Cybersecurity Course takes you from first principles to real-world
+      offense and defense — networking, Linux, web exploitation, and blue-team
+      operations, taught through labs instead of slides.
+    </p>
+    <div class="cta-row">
+      <a href="#enroll" class="btn btn-primary">Start the course</a>
+      <a href="#modules" class="btn btn-ghost">View syllabus</a>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="r"></span><span class="a"></span><span class="g"></span>
+        <span class="path">k2kumar-it — bash</span>
+      </div>
+      <div class="terminal-body">
+        <div class="line">$ ./enroll.sh --track cybersecurity</div>
+        <div class="line out">[+] loading modules: recon, exploitation, defense...</div>
+        <div class="line out">[+] environment ready</div>
+        <div class="line" id="type-line">$ <span id="typed-line"></span><span class="cursor"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stats">
+    <div class="section-head">
+      <div class="section-tag">by the numbers</div>
+      <h2>A course built around outcomes</h2>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Hands-on labs</div></div>
+      <div class="stat"><div class="stat-num">6</div><div class="stat-label">Core modules</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Practical, no fluff</div></div>
+      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Lab environment access</div></div>
+    </div>
+  </section>
+
+  <section id="modules">
+    <div class="section-head">
+      <div class="section-tag">syllabus</div>
+      <h2>Six modules, start to finish</h2>
+      <p class="section-desc">Each module builds on the last — you'll finish able to break, and fix, a real system.</p>
+    </div>
+    <div class="modules">
+      <div class="module">
+        <div class="module-index">01</div>
+        <div>
+          <div class="module-title">Networking &amp; Linux Foundations</div>
+          <div class="module-desc">TCP/IP, DNS, packet capture, and the Linux command line skills every security engineer relies on daily.</div>
+          <span class="module-tag">FOUNDATION</span>
+        </div>
+      </div>
+      <div class="module">
+        <div class="module-index">02</div>
+        <div>
+          <div class="module-title">Reconnaissance &amp; Enumeration</div>
+          <div class="module-desc">Passive and active recon, port scanning, and service fingerprinting using Nmap and open-source intel.</div>
+          <span class="module-tag">OFFENSE</span>
+        </div>
+      </div>
+      <div class="module">
+        <div class="module-index">03</div>
+        <div>
+          <div class="module-title">Web Application Exploitation</div>
+          <div class="module-desc">SQL injection, XSS, authentication bypass, and OWASP Top 10 vulnerabilities in a safe lab environment.</div>
+          <span class="module-tag">OFFENSE</span>
+        </div>
+      </div>
+      <div class="module">
+        <div class="module-index">04</div>
+        <div>
+          <div class="module-title">System &amp; Privilege Escalation</div>
+          <div class="module-desc">Exploiting misconfigurations on Linux and Windows targets to move from initial access to full control.</div>
+          <span class="module-tag">OFFENSE</span>
+        </div>
+      </div>
+      <div class="module">
+        <div class="module-index">05</div>
+        <div>
+          <div class="module-title">Threat Detection &amp; Monitoring</div>
+          <div class="module-desc">Reading logs, building detections, and using SIEM tooling to catch what the offense modules just taught you.</div>
+          <span class="module-tag">DEFENSE</span>
+        </div>
+      </div>
+      <div class="module">
+        <div class="module-index">06</div>
+        <div>
+          <div class="module-title">Incident Response &amp; Hardening</div>
+          <div class="module-desc">Containing a live compromise, writing the post-mortem, and hardening systems so it doesn't happen twice.</div>
+          <span class="module-tag">DEFENSE</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="section-head">
+      <div class="section-tag">toolkit</div>
+      <h2>Tools you'll actually use</h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-chip"><span class="bullet">&gt;</span>Nmap</div>
+      <div class="skill-chip"><span class="bullet">&gt;</span>Wireshark</div>
+      <div class="skill-chip"><span class="bullet">&gt;</span>Burp Suite</div>
+      <div class="skill-chip"><span class="bullet">&gt;</span>Metasploit</div>
+      <div class="skill-chip"><span class="bullet">&gt;</span>Linux CLI</div>
+      <div class="skill-chip"><span class="bullet">&gt;</span>Python scripting</div>
+      <div class="skill-chip"><span class="bullet">&gt;</span>SIEM &amp; logging</div>
+      <div class="skill-chip"><span class="bullet">&gt;</span>Active Directory</div>
+    </div>
+  </section>
+
+  <section id="enroll">
+    <hr class="rule">
+    <div class="section-head" style="margin-top:44px;">
+      <div class="section-tag">get started</div>
+      <h2>Ready to break into security?</h2>
+      <p class="section-desc">No prior experience required — just curiosity and a willingness to Google the error message.</p>
+    </div>
+    <div class="cta-row">
+      <a href="#" class="btn btn-primary">Enroll now</a>
+      <a href="#" class="btn btn-ghost">Contact K2Kumar-IT</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <div class="footer-brand"><b>K2Kumar-IT</b> — Cybersecurity Course</div>
+    <div class="footer-links">
+      <a href="#modules">Modules</a>
+      <a href="#skills">Toolkit</a>
+      <a href="#enroll">Enroll</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---------- Matrix rain ----------
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+  let w, h, columns, drops;
+  const chars = 'アイウエオカキクケコ01アルゴリズム暗号セキュリティ$#@%&';
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+    const fontSize = 15;
+    columns = Math.floor(w / fontSize);
+    drops = new Array(columns).fill(0).map(() => Math.random() * -50);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw(){
+    ctx.fillStyle = 'rgba(5,7,10,0.08)';
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = '#39ff88';
+    ctx.font = '15px monospace';
+    for(let i=0;i<drops.length;i++){
+      const text = chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(text, i*15, drops[i]*15);
+      if(drops[i]*15 > h && Math.random() > 0.975){ drops[i] = 0; }
+      drops[i]++;
+    }
+  }
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion){ setInterval(draw, 50); } else { ctx.fillStyle='#05070a'; ctx.fillRect(0,0,w,h); }
+
+  // ---------- Terminal typing effect ----------
+  const typedLineEl = document.getElementById('typed-line');
+  const messages = [
+    'scanning ports on 10.0.0.4 ...',
+    'found open port 22 (ssh)',
+    'checking known CVEs ...',
+    'no vulnerabilities found — nice work',
+    'welcome to k2kumar-it'
+  ];
+  let msgIndex = 0, charIndex = 0, deleting = false;
+
+  function typeLoop(){
+    const current = messages[msgIndex];
+    if(!deleting){
+      typedLineEl.textContent = current.slice(0, charIndex+1);
+      charIndex++;
+      if(charIndex === current.length){
+        deleting = true;
+        setTimeout(typeLoop, 1400);
+        return;
+      }
+    } else {
+      typedLineEl.textContent = current.slice(0, charIndex-1);
+      charIndex--;
+      if(charIndex === 0){
+        deleting = false;
+        msgIndex = (msgIndex+1) % messages.length;
+      }
+    }
+    setTimeout(typeLoop, deleting ? 30 : 55);
+  }
+  typeLoop();
+
+  // ---------- Reveal modules on scroll ----------
+  const modules = document.querySelectorAll('.module');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  modules.forEach(m => observer.observe(m));
+</script>
+
+</body>
+</html>
